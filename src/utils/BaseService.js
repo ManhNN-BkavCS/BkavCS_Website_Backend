@@ -6,6 +6,20 @@ class BaseService {
         this.model = model;
     }
 
+    async getAllPagination(page = 1, limit = 10) {
+        const offset = (page - 1) * limit;
+        const { rows, count } = await this.model.findAndCountAll({
+            offset,
+            limit
+        });
+        return {
+            data: rows,
+            totalItems: count,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page
+        };
+    }
+
     async getAll() {        
         return await this.model.findAll();
     }
