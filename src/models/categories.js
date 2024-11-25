@@ -15,6 +15,7 @@ module.exports = function(sequelize) {
     sequelize,
     tableName: 'categories',
     timestamps: true,
+    underscored: true,
     indexes: [
       {
         name: "PRIMARY",
