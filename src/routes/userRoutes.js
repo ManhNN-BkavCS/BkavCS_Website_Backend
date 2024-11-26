@@ -1,11 +1,20 @@
-const express = require('express');  
-const userController = require('../controllers/userController');
-const router = express.Router();  
+const express = require('express');
+const router = express.Router();
+const userController = require('../controllers/UserController');
+const authorizeSuperAdmin = require('../middleware/authorizeSuperAdmin');
+const authController = require('../controllers/authController');
 
-router.get('/users', userController.getAllUsers);         
-router.get('/users/:userId', userController.getUserById); 
-router.post('/users', userController.createUser);         
-router.put('/users/:userId', userController.updateUser);  
-router.delete('/users/:userId', userController.deleteUser); 
+// Login super admin để lấy token
+router.post('/login', authController.loginSuperAdmin);
 
-module.exports = router;  
+router.get('/', authorizeSuperAdmin, userController.getAllUsers);
+
+router.get('/:userId', authorizeSuperAdmin, userController.getUserById);
+
+router.post('/users', authorizeSuperAdmin, userController.createUser);
+
+router.put('/:userId', authorizeSuperAdmin, userController.updateUser);
+
+router.delete('/:userId', authorizeSuperAdmin, userController.deleteUser);
+
+module.exports = router;
