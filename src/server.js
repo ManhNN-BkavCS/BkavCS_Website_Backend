@@ -1,14 +1,10 @@
 const express = require('express');
 const { sequelize } = require('./configs/database');
 const userRoutes = require('./routes/userRoutes');
-const setupSuperAdmin = require('./setupDefaultUser');
 
 const app = express();
 app.use(express.json());
-
-setupSuperAdmin(); 
-
-app.use('/users', userRoutes);
+app.use('/api', userRoutes); 
 
 sequelize.sync({ logging: false }).then(() => {
   app.listen(3000, () => {

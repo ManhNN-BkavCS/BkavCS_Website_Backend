@@ -1,136 +1,78 @@
-const { users } = require('../models');
-const bcrypt = require('bcrypt');
-const authorizeSuperAdmin = require('../middleware/authorizeSuperAdmin');
+const userService = require('../services/UserService');
 
-// Create a new user
-async function createUser(req, res) {
-  const { full_name, username, email, password, role, session_quantity, login_time, is_active } = req.body;
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await users.create({
-      full_name,
-      username,
-      email,
-      password: hashedPassword,
-      role,
-      session_quantity,
-      login_time,
-      is_active,
-    });
-    res.status(201).json(user);
-  } catch (error) {
-    res.status(400).json({ message: 'Error creating user', error: error.message });
-  }
-}
-
-// Get all users
-async function getAllUsers(req, res) {
-  try {
-    const userList = await users.findAll();
-    res.status(200).json(userList);
-  } catch (error) {
-    res.status(500).json({ message: 'Error retrieving users', error: error.message });
-  }
-}
-
-// Get user by ID
-async function getUserById(req, res) {
-  const { id } = req.params;
-  try {
-    const user = await users.findByPk(id);
-    if (user) {
-      res.status(200).json(user);
-    } else {
-      res.status(404).json({ message: 'User not found' });
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await userService.getAll();
+        res.status(200).json(users);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error fetching users' });
     }
-  } catch (error) {
-    res.status(500).json({ message: 'Error retrieving user', error: error.message });
-  }
-}
-
-// Update user by ID
-async function updateUser(req, res) {
-  const { id } = req.params;
-  const { full_name, username, email, password, role, session_quantity, login_time, is_active } = req.body;
-  try {
-    const user = await users.findByPk(id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      await user.update({
-        full_name,
-        username,
-        email,
-        password: hashedPassword,
-        role,
-        session_quantity,
-        login_time,
-        is_active,
-      });
-    } else {
-      await user.update({
-        full_name,
-        username,
-        email,
-        role,
-        session_quantity,
-        login_time,
-        is_active,
-      });
-    }
-
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating user', error: error.message });
-  }
-}
-
-// Delete user by ID
-async function deleteUser(req, res) {
-  const { id } = req.params;
-  try {
-    const user = await users.findByPk(id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    await user.destroy();
-    res.status(200).json({ message: 'User deleted' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error deleting user', error: error.message });
-  }
-}
-
-module.exports = {
-  createUser,
-  getAllUsers,
-  getUserById,
-  updateUser,
-  deleteUser,
 };
 
-// setupDefaultUser.js
-const bcrypt = require('bcrypt');
-const { users } = require('./models');
+exports.getUserById = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const user = await userService.getById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error fetching user' });
+    }
+};
 
-async function setupSuperAdmin() {
-  const existingAdmin = await users.findOne({ where: { email: 'superadmin@gmail.com' } });
+exports.createUser = async (req, res) => {
+    const { full_name, username, email, password, role, is_active } = req.body;
+    try {
+        const newUser = await userService.create({
+            full_name,
+            username,
+            email,
+            password, 
+            role,
+            is_active
+        });
+        res.status(201).json(newUser);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error creating user' });
+    }
+};
 
-  if (!existingAdmin) {
-    const hashedPassword = await bcrypt.hash('123456a@A', 10);
-    await users.create({
-      full_name: 'Super Admin',
-      username: 'superadmin',
-      email: 'superadmin@gmail.com',
-      password: hashedPassword,
-      role: 'superadmin',
-      is_active: true,
-    });
-    console.log('Super Admin created');
-  }
-}
+exports.updateUser = async (req, res) => {
+    const { userId } = req.params;
+    const { full_name, username, email, role, is_active } = req.body;
+    try {
+        const updatedUser = await userService.update(userId, {
+            full_name,
+            username,
+            email,
+            role,
+            is_active
+        });
+        if (updatedUser[0] === 0) {
+            return res.status(404).json({ message: 'User not found or no changes made' });
+        }
+        res.status(200).json({ message: 'User updated successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error updating user' });
+    }
+};
 
-module.exports = setupSuperAdmin;
+exports.deleteUser = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const deletedUser = await userService.delete(userId);
+        if (!deletedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error deleting user' });
+    }
+};
