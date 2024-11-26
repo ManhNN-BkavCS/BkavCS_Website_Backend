@@ -1,9 +1,11 @@
 const express = require('express');
 const { sequelize } = require('./configs/database');
+const serviceRoutes = require('./routes/serviceRoutes');
 
 const app = express();
 app.use(express.json());
 
+app.use('/api/services', serviceRoutes);
 
 sequelize.sync().then(() => {
     app.listen(3000, () => {
