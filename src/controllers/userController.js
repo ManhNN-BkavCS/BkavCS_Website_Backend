@@ -1,4 +1,5 @@
 const userService = require('../services/UserService');
+const bcrypt = require('bcrypt');
 
 exports.getAllUsers = async (req, res) => {
     try {
