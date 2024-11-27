@@ -1,18 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const serviceController = require('../controllers/serviceController');
-const path = require('path');
-const multer = require('multer');
+const uploadService = require('../middlewares/uploadServiceMiddleware');
 
-const storageService = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './src/assets/images/services/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); 
-    }
-});
-const uploadService = multer({ storage: storageService });
 router.get('/', serviceController.getAllService);
 router.get('/:serviceId', serviceController.getById);
 router.post('/search', serviceController.searchByName);
