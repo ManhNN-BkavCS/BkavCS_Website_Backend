@@ -18,7 +18,11 @@ module.exports = function(sequelize) {
     ip_address: {
       type: DataTypes.STRING(255),
       allowNull: true
-    }
+    },
+    refresh_token: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
   }, {
     sequelize,
     tableName: 'session',

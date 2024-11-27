@@ -1,6 +1,7 @@
 const { sequelize } = require("../configs/database");
 const users = require("../models/users")(sequelize);
 const BaseService = require('../utils/BaseService');
+const bcrypt = require('bcrypt');
 
 class UserService extends BaseService {
     constructor() {
@@ -18,6 +19,27 @@ class UserService extends BaseService {
     async getActiveUsers() {
         return await this.model.findAll({ where: { is_active: true } });
     }
+
+    async createSuperAdmin() {
+        const defaultSuperAdmin = {
+            full_name: 'Super Admin',
+            username: 'superadmin',
+            email: 'superadmin@example.com',
+            password: await bcrypt.hash('123456a@A', 10), 
+            role: 'superadmin',
+            is_active: true
+        };
+    
+        const existingSuperAdmin = await this.model.findOne({ where: { username: defaultSuperAdmin.username } });
+    
+        if (!existingSuperAdmin) {
+            await this.model.create(defaultSuperAdmin);
+            console.log('SuperAdmin account created successfully.');
+        } else {
+            console.log('SuperAdmin account already exists.');
+        }
+    }
+    
 }
 
 module.exports = new UserService();

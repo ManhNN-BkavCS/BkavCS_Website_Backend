@@ -40,10 +40,6 @@ module.exports = function(sequelize) {
       allowNull: true,
       defaultValue: 24
     },
-    refresh_token: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
     is_active: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
