@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const userService = require('../services/UserService');
+const logService = require('../services/LogService');
 
 exports.login = async (req, res) => {
     try {
@@ -31,9 +32,30 @@ exports.login = async (req, res) => {
             { expiresIn: '1h' }
         );
 
+        await logService.createLog({
+            userId: user.id,
+            username: user.username,
+            ipAddress: req.ip,
+            action: 'login',
+            content: `Login successful for ${username}`,
+            status: 'success',
+        });
+
         return res.status(200).json({ token, message: 'Login successful' });
 
     } catch (error) {
+        console.error(error);
+
+        await logService.createLog({
+            userId: req.user.userId,
+            username: req.user.username,
+            ipAddress: req.ip,
+            action: 'login',
+            content: `Failed login attempt for ${username}`,
+            status: 'failed',
+            reason: error.message,
+        });
+
         return res.status(500).json({ message: 'Internal server error' });
     }
 };

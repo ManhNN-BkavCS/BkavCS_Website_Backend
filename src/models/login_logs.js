@@ -1,4 +1,4 @@
-const {DataTypes} = require('sequelize');
+const { DataTypes } = require('sequelize');
 module.exports = function(sequelize) {
   return sequelize.define('login_logs', {
     id: {
@@ -32,7 +32,7 @@ module.exports = function(sequelize) {
       allowNull: true
     },
     status: {
-      type: DataTypes.ENUM('success','failed'),
+      type: DataTypes.ENUM('success', 'failed'),
       allowNull: false
     },
     reason: {
@@ -48,16 +48,12 @@ module.exports = function(sequelize) {
         name: "PRIMARY",
         unique: true,
         using: "BTREE",
-        fields: [
-          { name: "id" },
-        ]
+        fields: [{ name: "id" }]
       },
       {
         name: "id_user",
         using: "BTREE",
-        fields: [
-          { name: "id_user" },
-        ]
+        fields: [{ name: "id_user" }]
       },
     ]
   });
