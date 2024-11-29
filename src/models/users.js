@@ -6,6 +6,11 @@ module.exports = function(sequelize) {
       allowNull: false,
       primaryKey: true
     },
+    user_code: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      unique: "user_code"
+    },
     full_name: {
       type: DataTypes.STRING(255),
       allowNull: false
@@ -25,7 +30,7 @@ module.exports = function(sequelize) {
       allowNull: false
     },
     role: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.ENUM('super_admin','admin'),
       allowNull: false,
       defaultValue: "admin"
     },
@@ -52,6 +57,14 @@ module.exports = function(sequelize) {
         using: "BTREE",
         fields: [
           { name: "id" },
+        ]
+      },
+      {
+        name: "user_code",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "user_code" },
         ]
       },
       {
