@@ -1,11 +1,15 @@
-const {DataTypes} = require('sequelize');
+const { DataTypes } = require('sequelize');
 module.exports = function(sequelize) {
   return sequelize.define('users', {
     id: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
+    },
+    user_code: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      unique: "user_code"
     },
     full_name: {
       type: DataTypes.STRING(255),
@@ -33,16 +37,12 @@ module.exports = function(sequelize) {
     session_quantity: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      defaultValue: 1
+      defaultValue: 3
     },
     login_time: {
       type: DataTypes.INTEGER,
       allowNull: true,
       defaultValue: 24
-    },
-    refresh_token: {
-      type: DataTypes.STRING(255),
-      allowNull: true
     },
     is_active: {
       type: DataTypes.BOOLEAN,
@@ -60,6 +60,14 @@ module.exports = function(sequelize) {
         using: "BTREE",
         fields: [
           { name: "id" },
+        ]
+      },
+      {
+        name: "user_code",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "user_code" },
         ]
       },
       {

@@ -1,11 +1,15 @@
-const {DataTypes} = require('sequelize');
+const { DataTypes } = require('sequelize');
 module.exports = function(sequelize) {
   return sequelize.define('services', {
     id: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
+    },
+    service_code: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      unique: "service_code"
     },
     service_name: {
       type: DataTypes.STRING(255),
@@ -39,6 +43,14 @@ module.exports = function(sequelize) {
         using: "BTREE",
         fields: [
           { name: "id" },
+        ]
+      },
+      {
+        name: "service_code",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "service_code" },
         ]
       },
     ]

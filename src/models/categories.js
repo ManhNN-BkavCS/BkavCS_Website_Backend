@@ -1,11 +1,15 @@
-const {DataTypes} = require('sequelize');
+const { DataTypes } = require('sequelize');
 module.exports = function(sequelize) {
   return sequelize.define('categories', {
     id: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
+    },
+    category_code: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      unique: "category_code"
     },
     category_name: {
       type: DataTypes.STRING(255),
@@ -22,6 +26,14 @@ module.exports = function(sequelize) {
         using: "BTREE",
         fields: [
           { name: "id" },
+        ]
+      },
+      {
+        name: "category_code",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "category_code" },
         ]
       },
     ]
