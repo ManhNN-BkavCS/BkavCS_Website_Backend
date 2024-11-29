@@ -7,6 +7,7 @@ var _products = require("./products");
 var _services = require("./services");
 var _services_logs = require("./services_logs");
 var _session = require("./session");
+var _user_logs = require("./user_logs");
 var _users = require("./users");
 
 function initModels(sequelize) {
@@ -18,6 +19,7 @@ function initModels(sequelize) {
   var services = _services(sequelize, DataTypes);
   var services_logs = _services_logs(sequelize, DataTypes);
   var session = _session(sequelize, DataTypes);
+  var user_logs = _user_logs(sequelize, DataTypes);
   var users = _users(sequelize, DataTypes);
 
   category_logs.belongsTo(categories, { as: "id_category_category", foreignKey: "id_category"});
@@ -38,6 +40,10 @@ function initModels(sequelize) {
   users.hasMany(services_logs, { as: "services_logs", foreignKey: "user_id"});
   session.belongsTo(users, { as: "user", foreignKey: "user_id"});
   users.hasMany(session, { as: "sessions", foreignKey: "user_id"});
+  user_logs.belongsTo(users, { as: "admin", foreignKey: "admin_id"});
+  users.hasMany(user_logs, { as: "user_logs", foreignKey: "admin_id"});
+  user_logs.belongsTo(users, { as: "user", foreignKey: "user_id"});
+  users.hasMany(user_logs, { as: "user_user_logs", foreignKey: "user_id"});
 
   return {
     categories,
@@ -48,6 +54,7 @@ function initModels(sequelize) {
     services,
     services_logs,
     session,
+    user_logs,
     users,
   };
 }

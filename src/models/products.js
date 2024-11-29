@@ -1,14 +1,13 @@
-const {DataTypes} = require('sequelize');
+const { DataTypes } = require('sequelize');
 module.exports = function(sequelize) {
   return sequelize.define('products', {
     id: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
     id_category: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(50),
       allowNull: false,
       references: {
         model: 'categories',
@@ -56,6 +55,7 @@ module.exports = function(sequelize) {
     sequelize,
     tableName: 'products',
     timestamps: true,
+    underscored: true,
     indexes: [
       {
         name: "PRIMARY",

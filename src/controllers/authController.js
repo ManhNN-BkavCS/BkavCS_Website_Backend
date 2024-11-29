@@ -16,6 +16,17 @@ exports.login = async (req, res) => {
 
         if (!user) {
             console.log('User not found');
+            
+            await logService.createLoginLog({
+                userId: null,  
+                username: username,
+                ipAddress: req.ip,
+                action: 'login',
+                content: `Failed login attempt for ${username} (user not found)`,
+                status: 'failed',
+                reason: 'User not found',
+            });
+
             return res.status(401).json({ message: 'Invalid username or password' });
         }
 
@@ -23,6 +34,17 @@ exports.login = async (req, res) => {
 
         if (!isPasswordValid) {
             console.log('Invalid password');
+
+            await logService.createLoginLog({
+                userId: user.id,
+                username: username,
+                ipAddress: req.ip,
+                action: 'login',
+                content: `Failed login attempt for ${username} (incorrect password)`,
+                status: 'failed',
+                reason: 'Incorrect password',
+            });
+
             return res.status(403).json({ message: 'Unauthorized access' });
         }
 
@@ -32,7 +54,7 @@ exports.login = async (req, res) => {
             { expiresIn: '1h' }
         );
 
-        await logService.createLog({
+        await logService.createLoginLog({
             userId: user.id,
             username: user.username,
             ipAddress: req.ip,
@@ -46,12 +68,12 @@ exports.login = async (req, res) => {
     } catch (error) {
         console.error(error);
 
-        await logService.createLog({
-            userId: req.user.userId,
-            username: req.user.username,
+        await logService.createLoginLog({
+            userId: null, 
+            username: username,
             ipAddress: req.ip,
             action: 'login',
-            content: `Failed login attempt for ${username}`,
+            content: `Failed login attempt for ${username} (error occurred)`,
             status: 'failed',
             reason: error.message,
         });

@@ -1,6 +1,7 @@
 const userService = require('../services/UserService');
 const bcrypt = require('bcrypt');
 const logService = require('../services/LogService');
+const { v4: uuidv4 } = require('uuid');  
 
 exports.getAllUsers = async (req, res) => {
     try {
@@ -27,11 +28,12 @@ exports.getUserById = async (req, res) => {
 };
 
 exports.createUser = async (req, res) => {
-    const { full_name, username, email, password, role, is_active } = req.body;
+    const { id, full_name, username, email, password, role, is_active } = req.body;
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = await userService.create({
+            id: uuidv4(),
             full_name,
             username,
             email,
@@ -40,9 +42,9 @@ exports.createUser = async (req, res) => {
             is_active
         });
 
-        await logService.createLog({
-            userId: req.user.userId,
-            username: req.user.username,
+        await logService.createUserLog({
+            adminId: req.user.userId, 
+            userId: newUser.id,
             ipAddress: req.ip,
             action: 'create_user',
             content: `Created user ${username}`,
@@ -53,9 +55,9 @@ exports.createUser = async (req, res) => {
     } catch (error) {
         console.error(error);
 
-        await logService.createLog({
-            userId: req.user.userId,
-            username: req.user.username,
+        await logService.createUserLog({
+            adminId: req.user.userId,
+            userId: req.body.id,
             ipAddress: req.ip,
             action: 'create_user',
             content: `Failed to create user ${username}`,
@@ -82,9 +84,9 @@ exports.updateUser = async (req, res) => {
             return res.status(404).json({ message: 'User not found or no changes made' });
         }
 
-        await logService.createLog({
-            userId: req.user.userId,
-            username: req.user.username,
+        await logService.createUserLog({
+            adminId: req.user.userId,
+            userId: userId,
             ipAddress: req.ip,
             action: 'update_user',
             content: `Updated user ${username}`,
@@ -95,9 +97,9 @@ exports.updateUser = async (req, res) => {
     } catch (error) {
         console.error(error);
 
-        await logService.createLog({
-            userId: req.user.userId,
-            username: req.user.username,
+        await logService.createUserLog({
+            adminId: req.user.userId,
+            userId: userId,
             ipAddress: req.ip,
             action: 'update_user',
             content: `Failed to update user ${username}`,
@@ -117,9 +119,9 @@ exports.deleteUser = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        await logService.createLog({
-            userId: req.user.userId,
-            username: req.user.username,
+        await logService.createUserLog({
+            adminId: req.user.userId,
+            userId: userId,
             ipAddress: req.ip,
             action: 'delete_user',
             content: `Deleted user ${userId}`,
@@ -130,9 +132,9 @@ exports.deleteUser = async (req, res) => {
     } catch (error) {
         console.error(error);
 
-        await logService.createLog({
-            userId: req.user.userId,
-            username: req.user.username,
+        await logService.createUserLog({
+            adminId: req.user.userId,
+            userId: userId,
             ipAddress: req.ip,
             action: 'delete_user',
             content: `Failed to delete user ${userId}`,

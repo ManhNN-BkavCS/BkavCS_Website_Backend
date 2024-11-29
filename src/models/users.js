@@ -1,9 +1,8 @@
-const {DataTypes} = require('sequelize');
+const { DataTypes } = require('sequelize');
 module.exports = function(sequelize) {
   return sequelize.define('users', {
     id: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
@@ -33,7 +32,7 @@ module.exports = function(sequelize) {
     session_quantity: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      defaultValue: 1
+      defaultValue: 3
     },
     login_time: {
       type: DataTypes.INTEGER,
@@ -49,10 +48,7 @@ module.exports = function(sequelize) {
     sequelize,
     tableName: 'users',
     timestamps: false,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
+    underscored: true,
         using: "BTREE",
         fields: [
           { name: "id" },
@@ -74,6 +70,5 @@ module.exports = function(sequelize) {
           { name: "email" },
         ]
       },
-    ]
-  });
+    );
 };

@@ -2,13 +2,12 @@ const { DataTypes } = require('sequelize');
 module.exports = function(sequelize) {
   return sequelize.define('login_logs', {
     id: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
     id_user: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(50),
       allowNull: false,
       references: {
         model: 'users',
@@ -32,7 +31,7 @@ module.exports = function(sequelize) {
       allowNull: true
     },
     status: {
-      type: DataTypes.ENUM('success', 'failed'),
+      type: DataTypes.ENUM('success','failed'),
       allowNull: false
     },
     reason: {
@@ -43,17 +42,23 @@ module.exports = function(sequelize) {
     sequelize,
     tableName: 'login_logs',
     timestamps: true,
+    updatedAt: false,
+    underscored: true,
     indexes: [
       {
         name: "PRIMARY",
         unique: true,
         using: "BTREE",
-        fields: [{ name: "id" }]
+        fields: [
+          { name: "id" },
+        ]
       },
       {
         name: "id_user",
         using: "BTREE",
-        fields: [{ name: "id_user" }]
+        fields: [
+          { name: "id_user" },
+        ]
       },
     ]
   });

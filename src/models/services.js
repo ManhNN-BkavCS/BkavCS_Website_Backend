@@ -1,9 +1,8 @@
-const {DataTypes} = require('sequelize');
+const { DataTypes } = require('sequelize');
 module.exports = function(sequelize) {
   return sequelize.define('services', {
     id: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
@@ -32,6 +31,7 @@ module.exports = function(sequelize) {
     sequelize,
     tableName: 'services',
     timestamps: true,
+    underscored: true,
     indexes: [
       {
         name: "PRIMARY",
