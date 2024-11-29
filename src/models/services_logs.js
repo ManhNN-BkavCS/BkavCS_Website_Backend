@@ -46,12 +46,8 @@ module.exports = function(sequelize) {
     sequelize,
     tableName: 'services_logs',
     timestamps: true,
-<<<<<<< HEAD
     createdAt: 'created_at',
     updatedAt: false,
-=======
-    underscored: true,
->>>>>>> 218346791464bb4a6f73ae567188404ec6a51de7
     indexes: [
       {
         name: "PRIMARY",
