@@ -1,14 +1,34 @@
 const userService = require('../services/UserService');
 const bcrypt = require('bcrypt');
 const logService = require('../services/LogService');
-const { v4: uuidv4 } = require('uuid');  
+const { v4: uuidv4, validate: uuidValidate } = require('uuid');  
 
 exports.getAllUsers = async (req, res) => {
     try {
         const users = await userService.getAll();
+        
+        await logService.createUserLog({
+            adminId: req.user.userId,  
+            userId: null,  
+            ipAddress: req.ip,
+            action: 'read_all_users',
+            content: 'Fetched all users',
+            status: 'success',
+        });
+
         res.status(200).json(users);
     } catch (error) {
         console.error(error);
+        await logService.createUserLog({
+            adminId: req.user.userId,
+            userId: null,
+            ipAddress: req.ip,
+            action: 'read_all_users',
+            content: 'Failed to fetch users',
+            status: 'failed',
+            reason: error.message,
+        });
+
         res.status(500).json({ message: 'Error fetching users' });
     }
 };
@@ -20,15 +40,35 @@ exports.getUserById = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
+
+        await logService.createUserLog({
+            adminId: req.user.userId,
+            userId: user.id,
+            ipAddress: req.ip,
+            action: 'read_user',
+            content: `Fetched user ${user.username}`,
+            status: 'success',
+        });
+
         res.status(200).json(user);
     } catch (error) {
         console.error(error);
+        await logService.createUserLog({
+            adminId: req.user.userId,
+            userId: userId,
+            ipAddress: req.ip,
+            action: 'read_user',
+            content: `Failed to fetch user ${userId}`,
+            status: 'failed',
+            reason: error.message,
+        });
+
         res.status(500).json({ message: 'Error fetching user' });
     }
 };
 
 exports.createUser = async (req, res) => {
-    const { id, full_name, username, email, password, role, is_active } = req.body;
+    const { full_name, username, email, password, role, is_active } = req.body;
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -57,7 +97,7 @@ exports.createUser = async (req, res) => {
 
         await logService.createUserLog({
             adminId: req.user.userId,
-            userId: req.body.id,
+            userId: null, 
             ipAddress: req.ip,
             action: 'create_user',
             content: `Failed to create user ${username}`,
@@ -71,6 +111,11 @@ exports.createUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
     const { userId } = req.params;
+
+    if (!uuidValidate(userId)) {
+        return res.status(400).json({ message: 'Invalid UUID format for userId' });
+    }
+
     const { full_name, username, email, role, is_active } = req.body;
     try {
         const updatedUser = await userService.update(userId, {
@@ -80,6 +125,7 @@ exports.updateUser = async (req, res) => {
             role,
             is_active
         });
+
         if (updatedUser[0] === 0) {
             return res.status(404).json({ message: 'User not found or no changes made' });
         }
@@ -113,8 +159,14 @@ exports.updateUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
     const { userId } = req.params;
+
+    if (!uuidValidate(userId)) {
+        return res.status(400).json({ message: 'Invalid UUID format for userId' });
+    }
+
     try {
         const deletedUser = await userService.delete(userId);
+
         if (!deletedUser) {
             return res.status(404).json({ message: 'User not found' });
         }
