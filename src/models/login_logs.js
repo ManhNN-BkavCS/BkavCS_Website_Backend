@@ -1,4 +1,4 @@
-const {DataTypes} = require('sequelize');
+const { DataTypes } = require('sequelize');
 module.exports = function(sequelize) {
   return sequelize.define('login_logs', {
     id: {
@@ -42,6 +42,8 @@ module.exports = function(sequelize) {
     sequelize,
     tableName: 'login_logs',
     timestamps: true,
+    updatedAt: false,
+    underscored: true,
     indexes: [
       {
         name: "PRIMARY",

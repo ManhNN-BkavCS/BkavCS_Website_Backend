@@ -1,4 +1,4 @@
-const {DataTypes} = require('sequelize');
+const { DataTypes } = require('sequelize');
 module.exports = function(sequelize) {
   return sequelize.define('product_logs', {
     id: {
@@ -46,6 +46,7 @@ module.exports = function(sequelize) {
     sequelize,
     tableName: 'product_logs',
     timestamps: true,
+    underscored: true,
     indexes: [
       {
         name: "PRIMARY",

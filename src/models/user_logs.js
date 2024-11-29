@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const {DataTypes} = require('sequelize');
+=======
+const { DataTypes } = require('sequelize');
+>>>>>>> 218346791464bb4a6f73ae567188404ec6a51de7
 module.exports = function(sequelize) {
   return sequelize.define('user_logs', {
     id: {
@@ -46,6 +50,11 @@ module.exports = function(sequelize) {
     sequelize,
     tableName: 'user_logs',
     timestamps: true,
+<<<<<<< HEAD
+=======
+    updatedAt: false,
+    underscored: true,
+>>>>>>> 218346791464bb4a6f73ae567188404ec6a51de7
     indexes: [
       {
         name: "PRIMARY",
