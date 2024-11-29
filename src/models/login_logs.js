@@ -2,13 +2,12 @@ const {DataTypes} = require('sequelize');
 module.exports = function(sequelize) {
   return sequelize.define('login_logs', {
     id: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
     id_user: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(50),
       allowNull: false,
       references: {
         model: 'users',

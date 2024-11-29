@@ -2,18 +2,22 @@ const {DataTypes} = require('sequelize');
 module.exports = function(sequelize) {
   return sequelize.define('products', {
     id: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
     id_category: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(50),
       allowNull: false,
       references: {
         model: 'categories',
         key: 'id'
       }
+    },
+    product_code: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      unique: "product_code"
     },
     product_name: {
       type: DataTypes.STRING(255),
@@ -49,8 +53,9 @@ module.exports = function(sequelize) {
       defaultValue: 0
     },
     status: {
-      type: DataTypes.STRING(255),
-      allowNull: true
+      type: DataTypes.ENUM('active','inactive','hidden'),
+      allowNull: false,
+      defaultValue: "active"
     }
   }, {
     sequelize,
@@ -63,6 +68,14 @@ module.exports = function(sequelize) {
         using: "BTREE",
         fields: [
           { name: "id" },
+        ]
+      },
+      {
+        name: "product_code",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "product_code" },
         ]
       },
       {

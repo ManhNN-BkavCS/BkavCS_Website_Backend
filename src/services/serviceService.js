@@ -8,10 +8,15 @@ class Service extends BaseService {
         super(services);
     }
 
-    async findByName(name) {
+    async findByName(service_name,id) {
         try {
             const service = await this.model.findAll({
-                where: { service_name }
+                where: { 
+                    [Op.or]: [
+                        { service_name },
+                        { id }
+                    ]
+                }
             });
             return service;
         } catch (error) {

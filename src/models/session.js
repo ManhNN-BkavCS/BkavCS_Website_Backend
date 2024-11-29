@@ -1,14 +1,14 @@
 const {DataTypes} = require('sequelize');
+const { create, update } = require('../services/serviceService');
 module.exports = function(sequelize) {
   return sequelize.define('session', {
     id: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
     user_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(50),
       allowNull: false,
       references: {
         model: 'users',
@@ -18,11 +18,17 @@ module.exports = function(sequelize) {
     ip_address: {
       type: DataTypes.STRING(255),
       allowNull: true
+    },
+    refresh_token: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     }
   }, {
     sequelize,
     tableName: 'session',
     timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: false,
     indexes: [
       {
         name: "PRIMARY",

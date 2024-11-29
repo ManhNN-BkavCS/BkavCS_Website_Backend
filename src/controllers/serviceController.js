@@ -1,7 +1,12 @@
 const Service = require('../services/serviceService');
+const { v4: uuidv4 } = require('uuid');
 
 function validate_input(data) {
     var errors = "";
+    if (data.id && data.id.length == 0) {
+        errors += "id cannot be empty! ";
+    }
+
     if (data.service_name && data.service_name.length == 0) {
         errors += "service_name cannot be empty! ";
     }
@@ -33,11 +38,11 @@ exports.getAllService = async (req, res) => {
 
 exports.getById = async (req, res) => {
     try {
-        const services = await Service.getById(req.params.serviceId);
+        const services = await Service.getById(req.headers['serviceid']);
         if (!services) {
             return res.status(404).json({ message: 'Service not found' });
         }
-        const upView = await Service.upView(req.params.serviceId);
+        const upView = await Service.upView(req.headers['serviceid']);
         if (!upView) {
             return res.status(500).json({ message: 'up View false' });
         }
@@ -51,6 +56,7 @@ exports.getById = async (req, res) => {
 exports.searchByName = async (req, res) => {
     try {
         const name = req.body.name;
+        console.log(req.body)
         const services = await Service.searchByName(name);
         if (!services) {
             return res.status(404).json({ message: 'Service not found' });
@@ -65,6 +71,7 @@ exports.searchByName = async (req, res) => {
 exports.createService = async (req, res) => {
     try {
         const data = {
+            id: uuidv4(),
             service_name: req.body.service_name, 
             preview: req.body.preview, 
             content: req.body.content, 
@@ -74,15 +81,19 @@ exports.createService = async (req, res) => {
         if (errors != "") {
             return res.status(400).json({ message: errors})
         }
-        const check_service_name = await Service.findByName(service_name);
-        if (check_service_name) {
+        const check_service_name = await Service.findByName(data.service_name,data.id);
+        if (check_service_name.length > 0) {
             return res.status(400).json({ message: 'Service name already exists'})
         }
         const services = await Service.create(data);
         await Service.writeLogs({
+            id: uuidv4(),
             user_id: req.headers['user_id'],
             id_service: services.id,
-            content: "200 create service success"
+            content: "200 create service success",
+            ip_address: req.ip,
+            action: "create",
+            status: "success"
         })
         res.status(200).json(services);
     } catch (error) {
@@ -94,7 +105,7 @@ exports.createService = async (req, res) => {
 exports.updateService = async (req, res) => {
     try {
         if (req.method === 'GET') {
-            const services = await Service.getById(req.params.serviceId);
+            const services = await Service.getById(req.headers['serviceid']);
             if (!services) {
                 return res.status(404).json({ message: 'Service not found' }); 
             }
@@ -104,26 +115,35 @@ exports.updateService = async (req, res) => {
                 service_name: req.body.service_name, 
                 preview: req.body.preview, 
                 content: req.body.content, 
-                image: req.file?.filename
+                image: req.file?.filename,
+                status: req.body.status
             }
             const errors = validate_input(data);
             if (errors != "") {
                 return res.status(400).json({ message: errors})
             }
-            const services = await Service.update(req.params.serviceId,data);
+            const services = await Service.update(req.headers['serviceid'],data);
             await Service.writeLogs({
+                id: uuidv4(),
                 user_id: req.headers['user_id'],
-                id_service: req.params.serviceId,
-                content: "200 update service success"
+                id_service: req.headers['serviceid'],
+                content: "200 update service success",
+                ip_address: req.clientIp,
+                action: "update",
+                status: "success"
             })
             res.status(200).json(services);
         }
     } catch (error) {
         console.error('Error fetching services:', error);
         await Service.writeLogs({
+            id: uuidv4(),
             user_id: req.headers['user_id'],
-            id_service: req.params.serviceId,
-            content: "500 update service false"
+            id_service: req.headers['serviceid'],
+            content: "500 update service false",
+            ip_address: req.clientIp,
+            action: "update",
+            status: "failed"
         })
         res.status(500).json({ message: 'Internal Server Error' });
     }
@@ -131,19 +151,31 @@ exports.updateService = async (req, res) => {
 
 exports.deleteService = async (req, res) => {
     try {
-        // const services = await Service.delete(req.params.serviceId);
-        // await Service.writeLogs({
-        //     user_id: req.headers['user_id'],
-        //     id_service: req.params.serviceId,
-        //     content: "delete service success"
-        // })
-        // res.status(200).json(services);
+        const data = {
+            status: 'hidden'
+        }
+
+        const services = await Service.update(req.headers['serviceid'],data);
+        await Service.writeLogs({
+            id: uuidv4(),
+            user_id: req.headers['user_id'],
+            id_service: req.headers['serviceid'],
+            content: "200 delete service success",
+            ip_address: req.clientIp,
+            action: "delete",
+            status: "success"
+        })
+        res.status(200).json(services);
     } catch (error) {
         console.error('Error fetching services:', error);
         await Service.writeLogs({
+            id: uuidv4(),
             user_id: req.headers['user_id'],
-            id_service: req.params.serviceId,
-            content: "500 delete service false"
+            id_service: req.headers['serviceid'],
+            content: "500 delete service false",
+            ip_address: req.clientIp,
+            action: "delete",
+            status: "failed"
         })
         res.status(500).json({ message: 'Internal Server Error' });
     }
