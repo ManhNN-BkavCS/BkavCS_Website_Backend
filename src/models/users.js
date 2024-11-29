@@ -53,10 +53,7 @@ module.exports = function(sequelize) {
     sequelize,
     tableName: 'users',
     timestamps: false,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
+    underscored: true,
         using: "BTREE",
         fields: [
           { name: "id" },
@@ -86,6 +83,5 @@ module.exports = function(sequelize) {
           { name: "email" },
         ]
       },
-    ]
-  });
+    );
 };
