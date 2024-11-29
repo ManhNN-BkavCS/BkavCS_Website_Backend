@@ -31,11 +31,17 @@ module.exports = function(sequelize) {
       type: DataTypes.INTEGER,
       allowNull: true,
       defaultValue: 0
+    },
+    status: {
+      type: DataTypes.ENUM('active','inactive','hidden'),
+      allowNull: false,
+      defaultValue: "active"
     }
   }, {
     sequelize,
     tableName: 'services',
     timestamps: true,
+    underscored: true,
     indexes: [
       {
         name: "PRIMARY",

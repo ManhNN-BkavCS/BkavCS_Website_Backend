@@ -26,6 +26,7 @@ module.exports = function(sequelize) {
     sequelize,
     tableName: 'session',
     timestamps: true,
+    underscored: true,
     indexes: [
       {
         name: "PRIMARY",

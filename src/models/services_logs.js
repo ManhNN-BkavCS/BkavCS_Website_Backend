@@ -46,6 +46,7 @@ module.exports = function(sequelize) {
     sequelize,
     tableName: 'services_logs',
     timestamps: true,
+    underscored: true,
     indexes: [
       {
         name: "PRIMARY",

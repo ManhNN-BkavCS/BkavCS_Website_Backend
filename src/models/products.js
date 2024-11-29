@@ -53,13 +53,15 @@ module.exports = function(sequelize) {
       defaultValue: 0
     },
     status: {
-      type: DataTypes.STRING(255),
-      allowNull: true
+      type: DataTypes.ENUM('active','inactive','hidden'),
+      allowNull: false,
+      defaultValue: "active"
     }
   }, {
     sequelize,
     tableName: 'products',
     timestamps: true,
+    underscored: true,
     indexes: [
       {
         name: "PRIMARY",

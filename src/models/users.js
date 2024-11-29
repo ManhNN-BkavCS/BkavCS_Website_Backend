@@ -30,7 +30,7 @@ module.exports = function(sequelize) {
       allowNull: false
     },
     role: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.ENUM('super_admin','admin'),
       allowNull: false,
       defaultValue: "admin"
     },
