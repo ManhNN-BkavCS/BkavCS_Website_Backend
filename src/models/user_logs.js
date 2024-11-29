@@ -1,10 +1,18 @@
 const { DataTypes } = require('sequelize');
 module.exports = function(sequelize) {
-  return sequelize.define('session', {
+  return sequelize.define('user_logs', {
     id: {
       type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
+    },
+    admin_id: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     user_id: {
       type: DataTypes.STRING(50),
@@ -18,13 +26,25 @@ module.exports = function(sequelize) {
       type: DataTypes.STRING(255),
       allowNull: true
     },
-    refresh_token: {
+    action: {
       type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    content: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    status: {
+      type: DataTypes.ENUM('success','failed'),
+      allowNull: false
+    },
+    reason: {
+      type: DataTypes.TEXT,
       allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'session',
+    tableName: 'user_logs',
     timestamps: true,
     indexes: [
       {
@@ -33,6 +53,13 @@ module.exports = function(sequelize) {
         using: "BTREE",
         fields: [
           { name: "id" },
+        ]
+      },
+      {
+        name: "admin_id",
+        using: "BTREE",
+        fields: [
+          { name: "admin_id" },
         ]
       },
       {
