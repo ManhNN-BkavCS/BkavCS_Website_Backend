@@ -10,7 +10,7 @@ exports.getAllUsers = async (req, res) => {
         await logService.createUserLog({
             adminId: req.user.userId,  
             userId: null,  
-            ipAddress: req.ip,
+            ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
             action: 'read_all_users',
             content: 'Fetched all users',
             status: 'success',
@@ -22,7 +22,7 @@ exports.getAllUsers = async (req, res) => {
         await logService.createUserLog({
             adminId: req.user.userId,
             userId: null,
-            ipAddress: req.ip,
+            ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
             action: 'read_all_users',
             content: 'Failed to fetch users',
             status: 'failed',
@@ -44,7 +44,7 @@ exports.getUserById = async (req, res) => {
         await logService.createUserLog({
             adminId: req.user.userId,
             userId: user.id,
-            ipAddress: req.ip,
+            ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
             action: 'read_user',
             content: `Fetched user ${user.username}`,
             status: 'success',
@@ -56,7 +56,7 @@ exports.getUserById = async (req, res) => {
         await logService.createUserLog({
             adminId: req.user.userId,
             userId: userId,
-            ipAddress: req.ip,
+            ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
             action: 'read_user',
             content: `Failed to fetch user ${userId}`,
             status: 'failed',
@@ -86,7 +86,7 @@ exports.createUser = async (req, res) => {
         await logService.createUserLog({
             adminId: req.user.userId, 
             userId: newUser.id,
-            ipAddress: req.ip,
+            ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
             action: 'create_user',
             content: `Created user ${username}`,
             status: 'success',
@@ -99,7 +99,7 @@ exports.createUser = async (req, res) => {
         await logService.createUserLog({
             adminId: req.user.userId,
             userId: null, 
-            ipAddress: req.ip,
+            ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
             action: 'create_user',
             content: `Failed to create user ${username}`,
             status: 'failed',
@@ -135,7 +135,7 @@ exports.updateUser = async (req, res) => {
         await logService.createUserLog({
             adminId: req.user.userId,
             userId: userId,
-            ipAddress: req.ip,
+            ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
             action: 'update_user',
             content: `Updated user ${username}`,
             status: 'success',
@@ -148,7 +148,7 @@ exports.updateUser = async (req, res) => {
         await logService.createUserLog({
             adminId: req.user.userId,
             userId: userId,
-            ipAddress: req.ip,
+            ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
             action: 'update_user',
             content: `Failed to update user ${username}`,
             status: 'failed',
@@ -176,7 +176,7 @@ exports.deleteUser = async (req, res) => {
         await logService.createUserLog({
             adminId: req.user.userId,
             userId: userId,
-            ipAddress: req.ip,
+            ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
             action: 'delete_user',
             content: `Deleted user ${userId}`,
             status: 'success',
@@ -189,7 +189,7 @@ exports.deleteUser = async (req, res) => {
         await logService.createUserLog({
             adminId: req.user.userId,
             userId: userId,
-            ipAddress: req.ip,
+            ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
             action: 'delete_user',
             content: `Failed to delete user ${userId}`,
             status: 'failed',

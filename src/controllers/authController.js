@@ -20,7 +20,7 @@ exports.login = async (req, res) => {
             await logService.createLoginLog({
                 userId: null,  
                 username: username,
-                ipAddress: req.ip,
+                ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
                 action: 'login',
                 content: `Failed login attempt for ${username} (user not found)`,
                 status: 'failed',
@@ -38,7 +38,7 @@ exports.login = async (req, res) => {
             await logService.createLoginLog({
                 userId: user.id,
                 username: username,
-                ipAddress: req.ip,
+                ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
                 action: 'login',
                 content: `Failed login attempt for ${username} (incorrect password)`,
                 status: 'failed',
@@ -57,7 +57,7 @@ exports.login = async (req, res) => {
         await logService.createLoginLog({
             userId: user.id,
             username: user.username,
-            ipAddress: req.ip,
+            ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
             action: 'login',
             content: `Login successful for ${username}`,
             status: 'success',
@@ -71,7 +71,7 @@ exports.login = async (req, res) => {
         await logService.createLoginLog({
             userId: null, 
             username: username,
-            ipAddress: req.ip,
+            ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
             action: 'login',
             content: `Failed login attempt for ${username} (error occurred)`,
             status: 'failed',
