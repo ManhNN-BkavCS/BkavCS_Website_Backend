@@ -117,7 +117,7 @@ exports.deleteCategory = async (req, res) => {
         const log = {
             id: uuidv4(),
             user_id: req.user.userId,
-            id_category: id,
+            id_category: null,
             ip_address: clientIp.split(":").pop(),
             action: "DELETE",
             content: "Xóa loại sản phẩm",
@@ -132,7 +132,7 @@ exports.deleteCategory = async (req, res) => {
         const log = {
             id: uuidv4(),
             user_id: req.user.userId,
-            id_category: id,
+            id_category: null,
             ip_address: clientIp.split(":").pop(),
             action: "DELETE",
             content: "Xóa loại sản phẩm",
