@@ -6,6 +6,8 @@ class ProductService extends BaseService {
     constructor() {
         super(products);
     }
+
+    
 }
 
 module.exports = new ProductService(); 

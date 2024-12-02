@@ -16,7 +16,7 @@ module.exports = function(sequelize) {
     },
     id_category: {
       type: DataTypes.STRING(50),
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'categories',
         key: 'id'
@@ -46,7 +46,8 @@ module.exports = function(sequelize) {
     sequelize,
     tableName: 'category_logs',
     timestamps: true,
-    underscored: true,
+    createdAt: 'created_at',
+    updatedAt: false,
     indexes: [
       {
         name: "PRIMARY",

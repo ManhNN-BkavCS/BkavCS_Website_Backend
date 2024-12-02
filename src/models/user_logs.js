@@ -16,7 +16,7 @@ module.exports = function(sequelize) {
     },
     user_id: {
       type: DataTypes.STRING(50),
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'users',
         key: 'id'

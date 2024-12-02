@@ -16,7 +16,7 @@ module.exports = function(sequelize) {
     },
     id_product: {
       type: DataTypes.STRING(50),
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'products',
         key: 'id'
@@ -46,7 +46,8 @@ module.exports = function(sequelize) {
     sequelize,
     tableName: 'product_logs',
     timestamps: true,
-    underscored: true,
+    createdAt: 'created_at',
+    updatedAt: false,
     indexes: [
       {
         name: "PRIMARY",
