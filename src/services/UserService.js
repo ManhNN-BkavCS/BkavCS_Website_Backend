@@ -25,11 +25,12 @@ class UserService extends BaseService {
     async createSuperAdmin() {
         const defaultSuperAdmin = {
             id: uuidv4(), 
+            user_code: 'superadmin01',
             full_name: 'Super Admin',
             username: 'superadmin',
             email: 'superadmin@gmail.com',
             password: await bcrypt.hash('123456a@A', 10), 
-            role: 'superadmin',
+            role: 'super_admin',
             is_active: true,
         };
     

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const authorizeSuperAdmin = require('../middleware/authorizeSuperAdmin');
+const authorizeSuperAdmin = require('../middlewares/authorizeSuperAdmin');
 const authController = require('../controllers/authController');
 const logController = require('../controllers/logController');
 

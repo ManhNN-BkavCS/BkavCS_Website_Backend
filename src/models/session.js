@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+const {DataTypes} = require('sequelize');
 const { create, update } = require('../services/serviceService');
 module.exports = function(sequelize) {
   return sequelize.define('session', {

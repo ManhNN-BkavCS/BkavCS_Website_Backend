@@ -68,12 +68,13 @@ exports.getUserById = async (req, res) => {
 };
 
 exports.createUser = async (req, res) => {
-    const { full_name, username, email, password, role, is_active } = req.body;
+    const { user_code, full_name, username, email, password, role, is_active } = req.body;
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = await userService.create({
             id: uuidv4(),
+            user_code,
             full_name,
             username,
             email,
@@ -116,9 +117,10 @@ exports.updateUser = async (req, res) => {
         return res.status(400).json({ message: 'Invalid UUID format for userId' });
     }
 
-    const { full_name, username, email, role, is_active } = req.body;
+    const { user_code, full_name, username, email, role, is_active } = req.body;
     try {
         const updatedUser = await userService.update(userId, {
+            user_code,
             full_name,
             username,
             email,
