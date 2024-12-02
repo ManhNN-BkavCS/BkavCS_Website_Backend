@@ -11,12 +11,13 @@ const authorizeSuperAdmin = (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
         req.user = decoded;  
 
-        if (req.user.role !== 'superadmin') {
+        if (req.user.role !== 'super_admin') {
             return res.status(403).json({ message: 'Forbidden: You do not have permission to perform this action' });
         }
 
         next();
     } catch (error) {
+        console.log(error)
         return res.status(401).json({ message: 'Invalid token' });
     }
 };

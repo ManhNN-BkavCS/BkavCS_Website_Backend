@@ -1,6 +1,7 @@
 const { sequelize } = require("../configs/database");
 const loginLogs = require('../models/login_logs')(sequelize);
 const userLogs = require('../models/user_logs')(sequelize);
+const serviceLogs = require("../models/services_logs")(sequelize);
 const { v4: uuidv4 } = require('uuid');  
 
 const createLoginLog = async ({ userId, username, ipAddress, action, content, status, reason = null }) => {
@@ -37,4 +38,13 @@ const createUserLog = async ({ adminId, userId, ipAddress, action, content, stat
     }
 };
 
-module.exports = { createLoginLog, createUserLog };
+const createServiceLog = async (service_log) => {
+    try {
+        await serviceLogs.create(service_log);
+    } catch (error) {
+        console.error("Error write logs service:", error);
+        throw error;
+    }
+}
+
+module.exports = { createLoginLog, createUserLog, createServiceLog };

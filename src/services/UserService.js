@@ -29,7 +29,8 @@ class UserService extends BaseService {
             username: 'superadmin',
             email: 'superadmin@gmail.com',
             password: await bcrypt.hash('123456a@A', 10), 
-            role: 'superadmin',
+            role: 'super_admin',
+            user_code: 'super_admin',
             is_active: true,
         };
     

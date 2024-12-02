@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const userService = require('../services/UserService');
 const logService = require('../services/LogService');
+const sessionService = require('../services/sessionService');
+const { v4: uuidv4 } = require('uuid');
 
 exports.login = async (req, res) => {
     try {
@@ -46,6 +48,23 @@ exports.login = async (req, res) => {
             });
 
             return res.status(403).json({ message: 'Unauthorized access' });
+        }
+
+        const checkSession = await sessionService.checkSession(user.id);
+        if (checkSession.length >= user.session_quantity) {
+            return res.status(403).json({ message: 'Your session count has reached the maximum allowed.' });
+        }
+        const checkIP = checkSession.filter(x => x.ip_address === req.clientIp)
+        if (checkIP.length == 0) {  
+            const getSessionTime = user.login_time + "h";
+            const refresh_token = jwt.sign(
+                { userId: user.id, username: user.username, role: user.role },
+                process.env.JWT_SECRET_KEY,
+                { expiresIn: getSessionTime}
+            );
+            await sessionService.addSession({id: uuidv4(), user_id: user.id, ip_address: req.clientIp, refresh_token: refresh_token});
+        }else{
+            return res.status(400).json({ message: 'This user already has an active session with this ip'})
         }
 
         const token = jwt.sign(

@@ -16,7 +16,7 @@ module.exports = function(sequelize) {
     },
     id_service: {
       type: DataTypes.STRING(50),
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'services',
         key: 'id'

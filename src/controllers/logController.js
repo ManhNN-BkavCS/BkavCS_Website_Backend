@@ -1,6 +1,7 @@
 const { sequelize } = require('../configs/database');
 const loginLogs = require('../models/login_logs')(sequelize);
 const userLogs = require('../models/user_logs')(sequelize);
+const serviceLogs = require("../models/services_logs")(sequelize);
 
 const getLogs = async (req, res) => {
     try {
@@ -12,7 +13,11 @@ const getLogs = async (req, res) => {
             order: [['created_at', 'DESC']]  
         });
 
-        const allLogs = [...loginLogsData, ...userLogsData];
+        const serviceLogsData = await serviceLogs.findAll({
+            order: [['created_at', 'DESC']]  
+        });
+
+        const allLogs = [...loginLogsData, ...userLogsData, ...serviceLogsData];
 
         allLogs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 

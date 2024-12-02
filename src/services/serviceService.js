@@ -1,6 +1,6 @@
 const { sequelize } = require("../configs/database");
 const services = require("../models/services")(sequelize);
-const services_log = require("../models/services_logs")(sequelize);
+
 const BaseService = require("../utils/BaseService");
 const { Op } = require('sequelize');
 class Service extends BaseService {
@@ -21,6 +21,23 @@ class Service extends BaseService {
             return service;
         } catch (error) {
             console.error("Error fetching service by name:", error);
+            throw error;
+        }
+    }
+
+    async findByCode(service_code,id) {
+        try {
+            const service = await this.model.findAll({
+                where: { 
+                    [Op.or]: [
+                        { service_code },
+                        { id }
+                    ]
+                }
+            });
+            return service;
+        } catch (error) {
+            console.error("Error fetching service by code:", error);
             throw error;
         }
     }
@@ -47,16 +64,6 @@ class Service extends BaseService {
             return service;
         } catch (error) {
             console.error("Error fetching service by name:", error);
-            throw error;
-        }
-    }
-
-    async writeLogs(log) {
-        try {
-            const service = await services_log.create(log);
-            return service;
-        } catch (error) {
-            console.error("Error write logs service:", error);
             throw error;
         }
     }

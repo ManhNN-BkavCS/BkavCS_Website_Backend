@@ -4,6 +4,7 @@ const { sequelize } = require('./configs/database');
 const serviceRoutes = require('./routes/serviceRoutes');
 const userService = require('./services/UserService');
 const userRoutes = require('./routes/userRoutes');
+const sessionRoutes = require('./routes/sessionRoutes');
 const categoryRoutes = require('./routes/categoryRoutes')
 const productRoutes = require('./routes/productRoutes')
 const requestIp = require('request-ip');
@@ -17,6 +18,7 @@ app.use('/api', userRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/services', serviceRoutes);
+app.use('/api/session', sessionRoutes);
 
 
 sequelize.sync({ logging: false }).then(async () => {
